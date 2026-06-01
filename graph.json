@@ -50,8 +50,8 @@
     "ingest_plan": {
       "id": "ingest_plan",
       "name": "ingest_plan",
-      "type": "llm",
-      "tier": "model-medium",
+      "type": "io",
+      "tier": "no-llm",
       "exec_type": "inline",
       "hat": "",
       "inputs": [
@@ -81,7 +81,17 @@
       "conditional": false,
       "wave": null,
       "downshiftable": false,
-      "rationale": ""
+      "rationale": "",
+      "tool_call": {
+        "tool": "plan.normalize_md",
+        "args": {
+          "plan_raw": "plan_raw"
+        },
+        "outputs": {
+          "normalized_plan": "normalized_plan",
+          "plan_metadata": "plan_metadata"
+        }
+      }
     },
     "honor_gates": {
       "id": "honor_gates",

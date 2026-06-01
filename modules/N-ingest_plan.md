@@ -1,7 +1,7 @@
 ---
 node_id: ingest_plan
 exec_type: inline
-tier: model-medium
+tier: no-llm
 input_ports:
   - port: plan_raw
     format: any

@@ -1,0 +1,11 @@
+.staging-p0/
+.staging-*/
+*.emit-lock
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+burr.db
+sessions/
+*.session/
+.forge-staging/

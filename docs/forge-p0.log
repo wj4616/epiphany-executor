@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "verdict": "UNCERTAIN",
+  "dest": "/home/myuser/projects/epiphany-executor/.staging-p0",
+  "family": null,
+  "reason": "verify_dod has two 'required' out-edges (-> post_step_review and -> execute_step), i.e. a parallel fan-out, but the two branches never reconverge at an AND-join node; self_verify: emitted skill did not reach a clean sink / conform to its contract under the behavioral probe (L2)"
+}

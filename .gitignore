@@ -9,3 +9,7 @@ burr.db
 sessions/
 *.session/
 .forge-staging/
+
+# transient build diagnostics
+docs/*.log
+docs/.preforge-hashes.json

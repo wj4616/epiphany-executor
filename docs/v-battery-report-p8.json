@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "n_pass": 7,
+  "n_total": 7,
+  "checks": [
+    {
+      "v": "V1-graph-loads",
+      "ok": true,
+      "detail": "ok=True blocking=0 skill=epiphany-executor"
+    },
+    {
+      "v": "V2-modules-present",
+      "ok": true,
+      "detail": "missing=[]"
+    },
+    {
+      "v": "V3-contract-stamps",
+      "ok": true,
+      "detail": "groups=['lifecycle', 'dod', 'effect', 'traces']"
+    },
+    {
+      "v": "V4-importer-real-runs",
+      "ok": true,
+      "detail": "node_counts={'2026-05-31-goatcs-v3-build-plan': 82, '2026-05-31-power-flywheel-next-phase-plan': 66, '2026-05-31-gotscs-v1-build-plan': 37}"
+    },
+    {
+      "v": "V5-test-suite",
+      "ok": true,
+      "detail": ".................................................                        [100%]"
+    },
+    {
+      "v": "V6-skill-doc",
+      "ok": true,
+      "detail": "invocation + A.1-A.9 modes present"
+    },
+    {
+      "v": "V7-packaging",
+      "ok": true,
+      "detail": "manifest+provenance present"
+    }
+  ]
+}

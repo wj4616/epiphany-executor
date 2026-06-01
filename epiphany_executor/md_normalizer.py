@@ -160,14 +160,24 @@ def _parse_step_body(body: list[str]) -> dict:
 
 
 def _parse_gate_status(text: str) -> dict:
-    """Map the ``## Coverage Verdict`` block (``- **decision:** FAIL`` / ``- **blocking:** true``)
-    to a ``gate_status`` object. Default to a conservative non-PASS when absent so the executor's
-    INV-17 gate fails safe rather than silently proceeding."""
+    """Map a ``## Coverage Verdict`` block to a ``gate_status`` object. Two supported formats:
+      1. a ``- **decision:** FAIL`` / ``- **blocking:** true`` field list (reference-plan format);
+      2. the verdict in the HEADER itself — ``## Coverage Verdict — PASS`` (and an optional
+         ``## Structural Verdict — PASS``) — the build-plan format.
+    Default to a conservative non-PASS when absent so the executor's INV-17 gate fails safe."""
     decision = None
     blocking = None
     reason = ""
+    header_verdict = None
+    structural_verdict = None
     in_block = False
     for line in text.splitlines():
+        mh = re.match(r"^##\s+Coverage Verdict\s*[—:\-]+\s*(?P<v>[A-Za-z]+)", line, re.IGNORECASE)
+        if mh:
+            header_verdict = mh.group("v").upper()
+        ms = re.match(r"^##\s+Structural Verdict\s*[—:\-]+\s*(?P<v>[A-Za-z]+)", line, re.IGNORECASE)
+        if ms:
+            structural_verdict = ms.group("v").upper()
         if re.match(r"^##\s+Coverage Verdict", line, re.IGNORECASE):
             in_block = True
             continue
@@ -184,7 +194,16 @@ def _parse_gate_status(text: str) -> dict:
                 blocking = v.lower() in ("true", "yes", "1")
             elif f == "rationale":
                 reason = v
-    verdict = (decision or "UNKNOWN").upper().split()[0] if decision else "UNKNOWN"
+    # precedence: an explicit decision field wins; else the header verdict; else UNKNOWN.
+    if decision:
+        verdict = decision.upper().split()[0]
+    elif header_verdict:
+        verdict = header_verdict
+    else:
+        verdict = "UNKNOWN"
+    # a non-PASS structural verdict downgrades a PASS coverage verdict (both must hold).
+    if structural_verdict and structural_verdict != "PASS" and verdict == "PASS":
+        verdict = structural_verdict
     gate = "BLOCKING" if (blocking or verdict not in ("PASS",)) else "OPEN"
     return {"verdict": verdict, "gate": gate, "reason": reason}
 
@@ -204,6 +223,13 @@ def _parse_execution_order(text: str, valid: set[str]) -> list[str]:
             m = re.match(r"^\s*(?:\d+\.|-)\s+(?P<sid>[A-Za-z0-9][\w.\-]*)", line)
             if m and m.group("sid") in valid:
                 order.append(m.group("sid"))
+                continue
+            # build-plan format: an inline arrow/comma list (often backticked),
+            # e.g. `S-P0-forge → S-P0-contracts → S-P1-importer → ...`
+            for tok in re.split(r"[\s`→\->,]+", line):
+                tok = tok.strip("`")
+                if tok in valid and tok not in order:
+                    order.append(tok)
     return order
 
 

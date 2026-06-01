@@ -1,0 +1,16 @@
+{
+  "plan": "epiphany-executor-build-plan",
+  "sandboxed": true,
+  "n_steps": 26,
+  "lossy_fields": [
+    "build_order (no '## Execution Order'; using document order)"
+  ],
+  "gate": "PROCEED",
+  "n_waves": 23,
+  "accepted": 26,
+  "dryrun_sandboxed": 3,
+  "clean_terminal": true,
+  "inv12_no_silent_bypass": true,
+  "inv12_bad_rows": [],
+  "terminal": "CLEAN"
+}

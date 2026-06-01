@@ -1,0 +1,153 @@
+{
+  "jury_veto_self_test_passed": true,
+  "all_plans_pass_R018": true,
+  "per_plan": [
+    {
+      "plan_id": "ho-parallel",
+      "arms": {
+        "baseline": {
+          "m1_verified": 1.0,
+          "m2_verify_pass": 1.0,
+          "m3_back_update": 0.0,
+          "m4_end_to_end": 1.0,
+          "m5_recovery": 0.0,
+          "m6_coverage": 0.0
+        },
+        "executor_serial": {
+          "m1_verified": 1.0,
+          "m2_verify_pass": 1.0,
+          "m3_back_update": 1.0,
+          "m4_end_to_end": 1.0,
+          "m5_recovery": 1.0,
+          "m6_coverage": 1.0
+        },
+        "executor_wave": {
+          "m1_verified": 1.0,
+          "m2_verify_pass": 1.0,
+          "m3_back_update": 1.0,
+          "m4_end_to_end": 1.0,
+          "m5_recovery": 1.0,
+          "m6_coverage": 1.0
+        }
+      },
+      "barriers": {
+        "baseline": 5,
+        "executor_serial": 3,
+        "executor_wave": 3
+      },
+      "throughput_gain_barriers": 2,
+      "verdict": {
+        "n_strict_wins": 3,
+        "decisive_trio_won": true,
+        "no_regressions": true,
+        "passes_R018": true,
+        "per_metric_wins": {
+          "m1_verified": false,
+          "m2_verify_pass": false,
+          "m3_back_update": true,
+          "m4_end_to_end": false,
+          "m5_recovery": true,
+          "m6_coverage": true
+        }
+      }
+    },
+    {
+      "plan_id": "ho-backupdate",
+      "arms": {
+        "baseline": {
+          "m1_verified": 1.0,
+          "m2_verify_pass": 1.0,
+          "m3_back_update": 0.0,
+          "m4_end_to_end": 1.0,
+          "m5_recovery": 0.0,
+          "m6_coverage": 0.0
+        },
+        "executor_serial": {
+          "m1_verified": 1.0,
+          "m2_verify_pass": 1.0,
+          "m3_back_update": 1.0,
+          "m4_end_to_end": 1.0,
+          "m5_recovery": 1.0,
+          "m6_coverage": 1.0
+        },
+        "executor_wave": {
+          "m1_verified": 1.0,
+          "m2_verify_pass": 1.0,
+          "m3_back_update": 1.0,
+          "m4_end_to_end": 1.0,
+          "m5_recovery": 1.0,
+          "m6_coverage": 1.0
+        }
+      },
+      "barriers": {
+        "baseline": 2,
+        "executor_serial": 2,
+        "executor_wave": 2
+      },
+      "throughput_gain_barriers": 0,
+      "verdict": {
+        "n_strict_wins": 3,
+        "decisive_trio_won": true,
+        "no_regressions": true,
+        "passes_R018": true,
+        "per_metric_wins": {
+          "m1_verified": false,
+          "m2_verify_pass": false,
+          "m3_back_update": true,
+          "m4_end_to_end": false,
+          "m5_recovery": true,
+          "m6_coverage": true
+        }
+      }
+    },
+    {
+      "plan_id": "ho-serial",
+      "arms": {
+        "baseline": {
+          "m1_verified": 1.0,
+          "m2_verify_pass": 1.0,
+          "m3_back_update": 0.0,
+          "m4_end_to_end": 1.0,
+          "m5_recovery": 0.0,
+          "m6_coverage": 0.0
+        },
+        "executor_serial": {
+          "m1_verified": 1.0,
+          "m2_verify_pass": 1.0,
+          "m3_back_update": 1.0,
+          "m4_end_to_end": 1.0,
+          "m5_recovery": 1.0,
+          "m6_coverage": 1.0
+        },
+        "executor_wave": {
+          "m1_verified": 1.0,
+          "m2_verify_pass": 1.0,
+          "m3_back_update": 1.0,
+          "m4_end_to_end": 1.0,
+          "m5_recovery": 1.0,
+          "m6_coverage": 1.0
+        }
+      },
+      "barriers": {
+        "baseline": 3,
+        "executor_serial": 3,
+        "executor_wave": 3
+      },
+      "throughput_gain_barriers": 0,
+      "verdict": {
+        "n_strict_wins": 3,
+        "decisive_trio_won": true,
+        "no_regressions": true,
+        "passes_R018": true,
+        "per_metric_wins": {
+          "m1_verified": false,
+          "m2_verify_pass": false,
+          "m3_back_update": true,
+          "m4_end_to_end": false,
+          "m5_recovery": true,
+          "m6_coverage": true
+        }
+      }
+    }
+  ]
+}

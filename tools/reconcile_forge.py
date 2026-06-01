@@ -15,8 +15,22 @@ import shutil
 import sys
 
 
+def _live_module_refs(live: str) -> set[str] | None:
+    """The module_file paths referenced by the LIVE (preserved) graph.json. Returns None if there
+    is no live graph.json yet (first emit — then no orphan filtering applies)."""
+    gj = os.path.join(live, "graph.json")
+    if not os.path.exists(gj):
+        return None
+    try:
+        g = json.load(open(gj))
+    except (ValueError, OSError):
+        return None
+    return {n.get("module_file") for n in (g.get("nodes") or {}).values() if n.get("module_file")}
+
+
 def reconcile(staging: str, live: str) -> dict:
-    added, preserved = [], []
+    added, preserved, skipped_orphans = [], [], []
+    module_refs = _live_module_refs(live)
     for root, _dirs, files in os.walk(staging):
         for fn in files:
             src = os.path.join(root, fn)
@@ -25,11 +39,21 @@ def reconcile(staging: str, live: str) -> dict:
             if os.path.exists(dst):
                 preserved.append(rel)
                 continue
+            # EX-1: a re-forge (non-deterministic) may emit a module for a node that the PRESERVED
+            # graph.json does not contain — adding it would pollute the tree with an orphan module.
+            # Skip a staging module/ file not referenced by the live graph (only when a live graph
+            # exists; on first emit module_refs is None and everything is added).
+            if (module_refs is not None and rel.replace(os.sep, "/").startswith("modules/")
+                    and rel.replace(os.sep, "/") not in module_refs):
+                skipped_orphans.append(rel)
+                continue
             os.makedirs(os.path.dirname(dst), exist_ok=True)
             shutil.copy2(src, dst)  # same-filesystem copy (avoids ecryptfs EXDEV from /tmp)
             added.append(rel)
     return {"added": sorted(added), "preserved": sorted(preserved),
-            "n_added": len(added), "n_preserved": len(preserved)}
+            "skipped_orphans": sorted(skipped_orphans),
+            "n_added": len(added), "n_preserved": len(preserved),
+            "n_skipped_orphans": len(skipped_orphans)}
 
 
 if __name__ == "__main__":

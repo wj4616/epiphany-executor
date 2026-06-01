@@ -1,7 +1,7 @@
 {
   "schema_version": "epiphany-harness.ir.v1",
   "dialect": "native",
-  "skill_name": "forged-skill",
+  "skill_name": "epiphany-executor",
   "skill_version": "1.0.0",
   "determinism_class": "non-deterministic",
   "nodes": {
@@ -566,28 +566,6 @@
     {
       "id": "E11",
       "src": "checkpoint_route",
-      "dst": "schedule_steps",
-      "kind": "back-edge",
-      "signal_field": null,
-      "gate_condition": null,
-      "retry_cap": 1,
-      "and_join_group": null,
-      "split_from": null
-    },
-    {
-      "id": "E12",
-      "src": "verify_dod",
-      "dst": "execute_step",
-      "kind": "required",
-      "signal_field": null,
-      "gate_condition": null,
-      "retry_cap": null,
-      "and_join_group": null,
-      "split_from": null
-    },
-    {
-      "id": "E13",
-      "src": "post_step_review",
       "dst": "schedule_steps",
       "kind": "back-edge",
       "signal_field": null,

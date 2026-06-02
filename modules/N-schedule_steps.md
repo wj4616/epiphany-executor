@@ -20,6 +20,10 @@ output_ports:
     format: any
     signal_field: next_step
     required: true
+  - port: schedule_status
+    format: any
+    signal_field: schedule_status
+    required: true
 ---
 
 # schedule_steps
@@ -50,5 +54,12 @@ You are the executor's scheduler. Your sole responsibility is dependency-aware o
 
 You do not execute, verify, or grade steps. You order them and hand the frontier forward.
 
+## Routing signal — `schedule_status`
+This drives the machine loop (the harness routes on it; you do not pick the successor):
+- **`ready`** — a step is ready: `next_step` is a real, ready step id. The machine routes to `execute_step`.
+- **`complete`** — EVERY plan step is ACCEPTED in the ledger (none unfinished). `next_step` is empty. The machine routes to `coverage_and_report` (terminal). Emit `complete` ONLY when the work is genuinely done — never to escape a stall.
+- **`blocked`** — unfinished steps remain but none are ready (blocked predecessors / cycle). `next_step` is empty. This is NOT done; surface the blocking predecessors. (The machine has no edge for `blocked`, so the run halts for human resolution — the correct fail-closed outcome.)
+The loop is machine-owned: `checkpoint_route` always returns control here after each accepted step, and you re-derive readiness over the full plan each time, so the loop advances through all N steps and exits via `complete`.
+
 ## Output
-Write exactly: `schedule`, `next_step`.
+Write exactly: `schedule`, `next_step`, `schedule_status`.

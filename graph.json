@@ -198,6 +198,13 @@
         {
           "name": "next_step",
           "signal_field": "next_step"
+        },
+        {
+          "name": "schedule_status",
+          "port": "schedule_status",
+          "signal_field": "schedule_status",
+          "type": "any",
+          "required": true
         }
       ],
       "raises_signals": [],
@@ -274,6 +281,13 @@
         {
           "name": "precommit_approval",
           "signal_field": "precommit_approval"
+        },
+        {
+          "name": "needs_human",
+          "port": "needs_human",
+          "signal_field": "needs_human",
+          "type": "any",
+          "required": true
         }
       ],
       "raises_signals": [],
@@ -460,6 +474,55 @@
       "wave": null,
       "downshiftable": false,
       "rationale": ""
+    },
+    "human_gate": {
+      "id": "human_gate",
+      "name": "human_gate",
+      "type": "io",
+      "tier": "no-llm",
+      "exec_type": "inline",
+      "hat": "",
+      "hitl": true,
+      "hitl_editable_signals": [
+        "human_decision"
+      ],
+      "inputs": [
+        {
+          "name": "precommit_approval",
+          "port": "precommit_approval",
+          "signal_field": "precommit_approval",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "needs_human",
+          "port": "needs_human",
+          "signal_field": "needs_human",
+          "type": "any",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "name": "human_decision",
+          "port": "human_decision",
+          "signal_field": "human_decision",
+          "type": "any",
+          "required": true
+        }
+      ],
+      "raises_signals": [],
+      "required_output_sections": [],
+      "module_file": "modules/N-human_gate.md",
+      "ensemble": null,
+      "tool_call": null,
+      "conditional": false,
+      "downshiftable": false,
+      "rationale": "\u00a76 human gate",
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "wave": null
     }
   },
   "edges": [
@@ -508,31 +571,9 @@
       "split_from": null
     },
     {
-      "id": "E05",
-      "src": "schedule_steps",
-      "dst": "execute_step",
-      "kind": "required",
-      "signal_field": null,
-      "gate_condition": null,
-      "retry_cap": null,
-      "and_join_group": null,
-      "split_from": null
-    },
-    {
       "id": "E06",
       "src": "execute_step",
       "dst": "precommit_gate",
-      "kind": "required",
-      "signal_field": null,
-      "gate_condition": null,
-      "retry_cap": null,
-      "and_join_group": null,
-      "split_from": null
-    },
-    {
-      "id": "E07",
-      "src": "precommit_gate",
-      "dst": "verify_dod",
       "kind": "required",
       "signal_field": null,
       "gate_condition": null,
@@ -563,26 +604,47 @@
       "split_from": null
     },
     {
-      "id": "E10",
-      "src": "checkpoint_route",
+      "id": "E05",
+      "src": "schedule_steps",
+      "dst": "execute_step",
+      "kind": "forward-conditional",
+      "gate_condition": "schedule_status == \"ready\""
+    },
+    {
+      "id": "E12",
+      "src": "schedule_steps",
       "dst": "coverage_and_report",
-      "kind": "required",
-      "signal_field": null,
-      "gate_condition": null,
-      "retry_cap": null,
-      "and_join_group": null,
-      "split_from": null
+      "kind": "forward-conditional",
+      "gate_condition": "schedule_status == \"complete\""
     },
     {
       "id": "E11",
       "src": "checkpoint_route",
       "dst": "schedule_steps",
       "kind": "back-edge",
-      "signal_field": null,
-      "gate_condition": null,
-      "retry_cap": 1,
-      "and_join_group": null,
-      "split_from": null
+      "retry_cap": 200,
+      "gate_condition": null
+    },
+    {
+      "id": "E07",
+      "src": "precommit_gate",
+      "dst": "verify_dod",
+      "kind": "forward-conditional",
+      "gate_condition": "needs_human != true"
+    },
+    {
+      "id": "E13",
+      "src": "precommit_gate",
+      "dst": "human_gate",
+      "kind": "forward-conditional",
+      "gate_condition": "needs_human == true"
+    },
+    {
+      "id": "E14",
+      "src": "human_gate",
+      "dst": "verify_dod",
+      "kind": "required",
+      "gate_condition": null
     }
   ],
   "entrypoints": [

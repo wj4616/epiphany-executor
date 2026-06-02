@@ -16,6 +16,10 @@ output_ports:
     format: any
     signal_field: precommit_approval
     required: true
+  - port: needs_human
+    format: any
+    signal_field: needs_human
+    required: true
 ---
 
 # precommit_gate
@@ -32,7 +36,8 @@ You are the pre-commit gate. A scheduled step has reached an **irreversible effe
 4. **Check upstream verification.** The step's DoD (acceptance_criteria + integration_checks + outputs) must have been graded VERIFIED by the independent verifier — not by the step's own executor, and not empty (empty acceptance_criteria => BLOCKED). An unverified step never reaches commit.
 5. **Honor plan-level gates.** Re-confirm no open blocking_defect, no BLOCKING-defect step, and gate_status verdict == PASS still hold for this step's scope. A gate that opened mid-run halts the commit.
 6. **Require human approval for the irreversible cross.** Present the resolved inputs, pulled context, DoD result, classified effect, checkpoint seq, and idempotency token. The human resolves the gate. Do not self-approve irreversible effects.
-7. **Emit the record.** Write the approval decision to `['precommit_approval']` — approved (with the authorizing checkpoint seq + token) or refused (with the failing condition). This is the only field you write.
+7. **Decide if a HUMAN must sign off (`needs_human`).** Set `needs_human = true` when this step carries a §6 marker — its `traces_requirements`/acceptance include **OQ-1** (vrr-catalog re-validation before R1 closes), the **refusal trigger** (an unfunded but needed primitive), a **plan-review gate (S-G2)**, **`human.final_gate` (S-G14)** for a high-stakes claim, or a **§9-assumption-falsified** condition — OR the irreversible effect is otherwise high-stakes. Otherwise `needs_human = false`. You do NOT self-approve a §6 step: when `needs_human == true` the machine routes to `human_gate` (a real HITL halt resolved by `override`), not to `verify_dod`. This is the enforcement of step 6's "the human resolves the gate."
+8. **Emit the record.** Write `['precommit_approval']` (approved with authorizing checkpoint seq + token, or refused with the failing condition) and `['needs_human']` (true/false per step 7).
 
 ## Failure modes (fail closed)
 

@@ -62,7 +62,11 @@ def evaluate_gate(plan: dict) -> GateDecision:
     gate_level = str(gate.get("gate", "")).upper()
     if verdict and verdict != "PASS":
         reasons.append(f"gate_status.verdict={verdict!r} (not PASS)")
-    if gate_level == "BLOCKING":
+    # A BLOCKING gate level only halts when the verdict did NOT pass. epiphany-plan marks its
+    # coverage/structural gates as blocking-TYPE (``blocking: true``) even on PASS; a passed
+    # blocking-type gate is not a halt (BD-4 reconciliation). Real blocking_defects below still
+    # halt independently, so a genuine block is never masked.
+    if gate_level == "BLOCKING" and verdict != "PASS":
         reasons.append("gate_status.gate=BLOCKING")
 
     defects = plan.get("blocking_defects") or []

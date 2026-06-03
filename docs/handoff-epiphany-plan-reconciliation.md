@@ -1,8 +1,33 @@
 # Co-tuning HANDOFF → epiphany-plan: schema ↔ emitter reconciliation (S-P7-handoff, DF-7, item h)
 
-**Status:** OPEN handoff. **The epiphany-executor build does NOT block on this** (INV-18 tolerant
-adapter path is in place and validated — S-P6-validate ALL_OK). This is a standing INV-12
-co-tuning item against the **epiphany-plan** skill, with a re-verify-on-shared-corpus gate.
+**Status:** ✅ RESOLVED 2026-06-01 (consumer-side tolerant reconciliation; see "Resolution" below).
+Previously OPEN. The epiphany-executor build never blocked on this (INV-18 tolerant adapter path
+was in place). Closed by accepting BOTH shapes on the consumer side + fixing the gate-semantics bug
+found during the epiphany-report handoff.
+
+## Resolution (2026-06-01)
+
+Direction chosen: **consumer-side tolerant reconciliation** (neither emitter nor schema forced to
+change; both the observed-emit triad AND the published-schema variant are accepted). Three layers:
+
+1. **Executor MD path** (`epiphany_executor/md_normalizer.py`): a clean PASS plan that marks its
+   coverage/structural gates as blocking-TYPE (`- **blocking:** true`) was being normalized to
+   `gate_status.gate="BLOCKING"` and FALSE-HALTED at INV-17. Fixed: the gate level is keyed on the
+   VERDICT (PASS→OPEN), never on the blocking-nature flag. Comma-separated requirement traces are
+   now split into individual ids for the coverage matrix.
+2. **Executor start gate** (`epiphany_executor/gate_defect.py`): `gate=="BLOCKING"` only halts when
+   the verdict is not PASS (a passed blocking-type gate proceeds; real `blocking_defects` still halt
+   independently).
+3. **Harness JSON importer** (`goatcs-harness/epiphany_plan_importer.py`): `is_epiphany_plan` now
+   recognizes the published-schema variant (`execution_order` + `steps` + `coverage_verdict`) in
+   addition to the triad; `_coerce_schema_variant` maps it onto the triad (`build_order` from
+   `execution_order`; `gate_status` from coverage/structural verdicts with PASS→OPEN semantics;
+   `structural_faults`/`blocking_defects` on a FAIL). Already-triad docs pass through unchanged.
+
+**Verified:** executor suite green (+6 integration tests on the real 48-step epiphany-report plan);
+harness importer suite green (+5 schema-variant tests); end-to-end `plan.md → md_normalizer →
+harness importer → GraphSpec` (48 nodes, gate OPEN, PROCEED). The table below is retained for
+history; the adapter is now a no-op for the reconciled fields in both directions.
 
 ## The divergence (grounded in 3 real runs, §4.6 / BD-4)
 

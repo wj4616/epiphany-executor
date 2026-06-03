@@ -117,7 +117,7 @@ def run_executor_arm(plan: dict, *, serial: bool, jury: int, ledger_dir: str) ->
     for wave in waves:
         for sid in wave.all_steps:
             store.record(RecoveryCursor(sid, LifecycleState.IN_FLIGHT))
-            v = verify_dod(contracts[sid], {"diff": sid}, run_check=lambda c, ctx: True, jury=jury)
+            v = verify_dod(contracts[sid], {"diff": sid}, run_check=lambda c, ctx: True, jury=jury)  # noqa: ARG001
             verify_total += 1
             if v.decision is Decision.PASS:
                 verify_passes += 1
@@ -185,7 +185,7 @@ def jury_veto_self_test() -> bool:
     """CV-06: a seeded bad output the jury MUST veto. True iff the jury catches it."""
     bad = stamp_node_contract({"step_id": "seeded-bad",
                                "acceptance_criteria": ["the test suite passes with 0 failures"]})
-    verdict = verify_dod(bad, {"diff": "broken"}, run_check=lambda c, ctx: False, jury=3)
+    verdict = verify_dod(bad, {"diff": "broken"}, run_check=lambda c, ctx: False, jury=3)  # noqa: ARG001
     return verdict.decision is Decision.FAIL
 
 

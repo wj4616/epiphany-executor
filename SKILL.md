@@ -9,6 +9,10 @@ The third skill in the pipeline **epiphany-spec → epiphany-plan → epiphany-e
 epiphany-plan emits a structured plan; **epiphany-executor executes it** to produce the
 implemented solution.
 
+## HOW IT WORKS
+
+The executor transforms a plan into a **deterministic runtime graph** (12 harness nodes, 13 edges) via the COMPILE model: each plan step becomes one graph node, one checkpoint, and one Burr action. The graph loops through `schedule_steps → execute_step → verify_dod → checkpoint_route` (back-edge at E11, capped at 200 retries) to iteratively execute ready steps, verify their outputs with an independent verifier, then advance to the next step or halt if a gate fails. A built-in HITL gate (`human_gate`) blocks on uncertain outcomes, never auto-progressing.
+
 ## INVOCATION
 
 ```

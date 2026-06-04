@@ -28,7 +28,12 @@ def real_plan():
 
 def test_real_plan_ingests_without_loss(real_plan):
     plan, lossy = real_plan
-    assert len(plan["steps"]) == 48
+    # snapshot count of the on-disk epiphany-report plan (49 steps as of 2026-06-03; the plan gained
+    # S-X9 in a later edit). The load-bearing guard is lossy == [] + unique ids — a silent step-drop
+    # regression still trips this.
+    ids = [s.get("step_id") for s in plan["steps"]]
+    assert len(plan["steps"]) == 49
+    assert len(set(ids)) == len(ids)        # no dropped/duplicated steps
     assert lossy == []                      # schema-conformant MD -> no lossy degradation
 
 

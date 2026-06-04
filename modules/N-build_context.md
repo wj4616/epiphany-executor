@@ -45,7 +45,9 @@ You assemble the execution context for the next scheduled step. You analyze the 
 
 5. **Preserve fidelity.** Every metadata field consumed must survive into context unaltered (`traces_to`, integration_checks status, gate-relevant flags). Do not paraphrase, normalize away, or drop fields you do not recognize as irrelevant.
 
-6. **Emit** `step_context` (resolved inputs + look-behind state + DoD surface) and `look_ahead` (ordered dependents + their required artifacts + contention flags).
+5b. **Harness/forge accommodation (additive; only when `plan_metadata.target_profile == "harness-forge"`).** Mirror `context_builder.build_step_context(..., plan_meta=plan_metadata, step=<raw step>)`: attach the harness/forge reference lines from `harness_forge_context_lines(pack, step)` (provider-hint → `--provider codex` for heavy runs; harness-first ordering; in-scope primitives; the exit-7/exit-11 conventions; the step's `target_subsystem` focus) to `step_context`, and run `detect_self_clobber(step, pack)` — when the pack is `self_modifying` and a step's `outputs[]` target a LIVE skill/harness/forge dir, record the offending paths and raise the thinking tier to DEEP (advisory raise-only; never relaxes a gate). For `generic` plans add none of this — `step_context` is byte-identical to today.
+
+6. **Emit** `step_context` (resolved inputs + look-behind state + DoD surface + any harness/forge context + self-clobber flags) and `look_ahead` (ordered dependents + their required artifacts + contention flags).
 
 ## Failure modes — fail closed
 

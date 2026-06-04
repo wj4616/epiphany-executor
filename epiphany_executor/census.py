@@ -39,6 +39,10 @@ PLAN_LEVEL_CONSUMERS: dict[str, str] = {
     "revisability_note": "metadata-only (records plan-versioning policy)",
     "removed_artifact": "metadata-only (records an artifact the plan dropped; provenance)",
     "schema_version": "schema-tolerant: S-P1-importer (fail-closed dialect/version gate, §4.5)",
+    # harness/forge accommodation (additive; absent for generic plans). Consumed by S-P2-context:
+    # context_builder.harness_forge_pack() branches on target_profile and injects harness_forge.
+    "target_profile": "schema-tolerant: S-P2-context (selects harness-forge accommodation; default generic)",
+    "harness_forge": "schema-tolerant: S-P2-context (provider-hint/harness-first/primitives context + self-clobber guard)",
 }
 
 STEP_LEVEL_CONSUMERS: dict[str, str] = {
@@ -59,6 +63,10 @@ STEP_LEVEL_CONSUMERS: dict[str, str] = {
     "gap_surfaced": "S-P1-gate-defect (a surfaced gap is treated like a non-blocking observation)",
     "is_gap_marker": "S-P5-coverage (a gap-marker step is excluded from executable coverage)",
     "resolved_bindings": "S-P2-context (pre-resolved input bindings feed look-behind)",
+    # harness/forge accommodation (additive; absent for generic plans). Consumed by S-P2-context:
+    # build_step_context() reads target_subsystem into the step context + the self-clobber guard.
+    "target_subsystem": "schema-tolerant: S-P2-context (harness/forge subsystem focus + self-clobber target)",
+    "obligation_class": "metadata-only (advisory obligation tag; the build-not-just-test gate lives in epiphany-plan coverage_audit)",
 }
 
 

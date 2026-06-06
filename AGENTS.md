@@ -1,5 +1,7 @@
 # AGENTS.md — epiphany-executor (agent operating guide)
 
+> **Humans: see `README.md`.** This file is the terse, agent-facing contract.
+
 Cross-ref: `SKILL.md` (the harness-loaded skill contract) and `README.md` (full human+AI
 reference). This file is the **agent-facing** quick guide. Everything here is grounded in the
 source; see the verification table in `README.md §11`.
@@ -109,6 +111,10 @@ plus `BLOCKED`, `FAILED`, `AMENDED`, `AWAITING`. Run-level aggregate: `PARTIAL`.
   ACCEPTED. A stall is `blocked` (surface the blocking predecessors), never `complete`.
 - **Reordering / "cleaning up" the raw plan at `read_plan`.** It is a byte-faithful pass-through;
   normalization belongs to `ingest_plan` (`modules/N-read_plan.md:42`).
+- **HALTing a clean plan over a blocking-TYPE gate.** epiphany-plan marks coverage/structural gates as
+  `blocking: true` *even when they PASS*. Read the **verdict** (PASS → OPEN → PROCEED, BD-4), not the
+  blocking-nature flag, or you falsely HALT a ship-ready plan. Pinned by
+  `tests/test_epiphany_report_integration.py`; logic at `gate_defect.py:69`.
 
 ---
 
@@ -140,10 +146,11 @@ per_step_gates:
   verify_dod:           DoD = acceptance ∪ integration_checks ∪ outputs; PASS|FAILED|BLOCKED
   checkpoint_route:     append ledger + bind Burr + advance one lifecycle stage
 
-census_consumers:        # authority = epiphany_executor/census.py
+census_consumers:        # authority = epiphany_executor/census.py (exact, non-exhaustive in prose)
   plan_level:  [plan_id, title, source_spec, gate_status, blocking_defects,
                 non_blocking_observations, requirement_preservation, build_order, steps,
-                structural_faults, refinement_back_edges, schema_version,
+                structural_faults, refinement_back_edges, schema_version, consumers,
+                removed_artifact, rendering_note, revisability_note,
                 target_profile, harness_forge]            # last two = harness/forge (schema-tolerant)
   step_level:  [step_id, goal, actions, inputs, outputs, dependencies, integration_checks,
                 acceptance_criteria, traces_to, traces_requirements, phase,
@@ -202,3 +209,6 @@ halt_classes:            [defect-ack, drift, irreversible, waiver-ack, backupdat
   of truth for `target_profile`, the context-pack, and back-compat rules across all three stages.
 - `tools/selfhost.py` — dogfood (executor runs its own build plan, INV-12); `tools/v_battery.py` —
   post-emit re-verify gate; `tools/reconcile_forge.py` — non-clobber re-forge.
+- `epiphany_executor/convergence.py` — S4 per-target closure gate (own-suite PASS ∧ session PASS ∧
+  measured `forge_authored_pct` ≥ floor; all MEASURED, deferred-by-default — F-A1).
+- **Test suite:** `pytest -q` → **164 passed** (23 test files). Run it before declaring a change done.

@@ -1,8 +1,10 @@
 # epiphany-executor
 
+> **AI agents: see `AGENTS.md`.** This file is the human-facing reference.
+
 > Executes an epiphany-plan execution plan **step by step** on the goatcs-harness runtime — bounded, verified, checkpointed, recoverable.
 
-**Version:** `1.0.0` (`epiphany_executor/__init__.py:10`, `pyproject.toml:8`, `graph.json:6`)
+**Version:** `1.0.0` (`epiphany_executor/__init__.py:10`, `pyproject.toml:7`, `manifest.json:3`, `graph.json:5`)
 **Audience:** humans operating the pipeline AND AI agents driving the harness (see also `AGENTS.md`, `SKILL.md`).
 
 ---
@@ -189,6 +191,7 @@ epiphany_executor/
 ├── baseline.py            # S-P6: the boring sequential applier (benchmark comparator + INV-14 base case)
 ├── validate.py            # S-P6: corpus ingest+execute validation (BLOCKING gate)
 ├── benchmark.py           # S-P6: 3-arm superiority benchmark (decisive trio: back-update/recovery/coverage)
+├── convergence.py         # S4: per-target closure gate (own-suite PASS ∧ session PASS ∧ measured forge_authored_pct ≥ floor; all MEASURED, never assumed — F-A1)
 └── memory.py              # S-P8: cross-run Memory flywheel (versioned, revocable, advisory priors)
 
 tools/
@@ -223,6 +226,9 @@ One-line roles:
 - **drift** — `snapshot_hashes`, `check_drift` → `DriftResolution.{NONE,REIMPORT,HALT}`.
 - **coverage** — `coverage_report`, `build_matrix`, `waive_plan_caused_orphan`.
 - **telemetry** — `health_view`, `resume_brief`, `halt_resolution`, `resume_from_halt`, `HaltClass`.
+- **convergence** — `closure_verdict` / `record_closure`; the S4 dual-bar (a) closure predicate (own
+  suite PASS ∧ session PASS ∧ measured `forge_authored_pct` ≥ `DEFAULT_FLOOR` 0.90); a missing/partial
+  record reads NOT-closed (deferred), never closed by default (F-A1, mirrors epiphany-report's pattern).
 - **corpus / baseline / validate / benchmark / memory** — the S-P6/S-P8 rigor + learning layer.
 
 ### 4.3 The harness substrate it REUSES (never reimplements, INV-3)
@@ -451,7 +457,7 @@ sandbox (S-P0 forge / S-P7 promote steps dry-run, no self-clobber) and asserts t
 
 | claim | evidence |
 |---|---|
-| version `1.0.0` | `epiphany_executor/__init__.py:10`; `pyproject.toml:8`; `graph.json:6`; `manifest.json:3` |
+| version `1.0.0` | `epiphany_executor/__init__.py:10`; `pyproject.toml:7`; `graph.json:5`; `manifest.json:3` |
 | 12 nodes, 13 edges | `graph.json` (nodes block `:7-527`; edges `:528-649`) |
 | per-step loop back-edge E11 cap 200 | `graph.json:620-627` |
 | routing conditions E05/E07/E12/E13 | `graph.json:607-641` |
@@ -476,7 +482,9 @@ sandbox (S-P0 forge / S-P7 promote steps dry-run, no self-clobber) and asserts t
 | selfhost dogfood CLEAN + INV-12 | `tools/selfhost.py`; `docs/BUILD-COMPLETE.md:18-24` |
 | graph actually drives (loop + human_gate) | `tests/test_graph_drive.py` |
 | forge provenance (power profile, best-of-3) | `provenance.json`; `RATIONALE.md`; `SKILL.md:91-93` |
-| test suite | **152 passed** (`pytest -q`, 22 test files) |
+| epiphany-plan ↔ executor integration (BD-4 PASS-on-blocking-type gate) | `tests/test_epiphany_report_integration.py`; `gate_defect.py:69` |
+| S4 convergence closure gate | `epiphany_executor/convergence.py`; `tests/test_convergence_closure_s4.py` |
+| test suite | **164 passed** (`pytest -q`, 23 test files) |
 
 ---
 

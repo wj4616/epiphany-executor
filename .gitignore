@@ -1,0 +1,18 @@
+# --- pipeline-backup safety block (auto-added) ---
+.env
+*.env
+*.pem
+*.key
+*.p12
+id_rsa
+id_rsa.*
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+.DS_Store
+*.swp

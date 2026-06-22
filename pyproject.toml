@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "epiphany-executor"
+version = "1.0.0"
+description = "A forge-emitted goatcs-harness skill that executes an epiphany-plan step by step (bounded/verified/checkpointed/recoverable)."
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+# goatcs-harness is the substrate (installed separately / editable in the dev env).
+test = ["pytest>=7"]
+
+[tool.setuptools]
+packages = ["epiphany_executor"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

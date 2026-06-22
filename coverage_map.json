@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "skill_name": "forged-skill",
+  "nodes": {
+    "read_plan": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "ingest_plan": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "honor_gates": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "build_context": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "schedule_steps": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "execute_step": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "precommit_gate": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "verify_dod": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "post_step_review": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "checkpoint_route": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    },
+    "coverage_and_report": {
+      "covered_by": [
+        "verify:structural",
+        "fidelity:contract"
+      ],
+      "covered": true
+    }
+  },
+  "orphans": []
+}

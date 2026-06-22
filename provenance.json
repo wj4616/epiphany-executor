@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "brief_sha": "f154d3daad756b294d78ab0358dd343ccbc9fd1d12eb2c7e979a9485acb37c7f",
+  "forge_version": "0.2.0",
+  "design_sha": "74ad25ffc3dff6fce106f0eb9bc1f8ee20d5eda8da514406a512e0e7df013fac",
+  "skill_name": "forged-skill",
+  "family": null,
+  "verdict": "UNCERTAIN",
+  "topology_class": "GoT-basic",
+  "selection_trace": {
+    "n_candidates": 3,
+    "n_survivors": 1,
+    "winner_index": 1,
+    "profile": "power",
+    "gate": "none"
+  },
+  "runtime_requirements": {
+    "determinism": "non-deterministic",
+    "needs_provider": true,
+    "tiers": [
+      "model-medium",
+      "no-llm"
+    ],
+    "hitl_nodes": [],
+    "network": false,
+    "seam_required_nodes": []
+  },
+  "providers": [
+    {
+      "name": "codex",
+      "version": null,
+      "model": null
+    },
+    {
+      "name": "claude-cli",
+      "version": null,
+      "model": null
+    }
+  ],
+  "recorded_run_id": null,
+  "intent_aligned": true,
+  "per_node_economics": {
+    "read_plan": {
+      "role": "IO",
+      "tier": "no-llm",
+      "ensemble": false
+    },
+    "ingest_plan": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    },
+    "honor_gates": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    },
+    "build_context": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    },
+    "schedule_steps": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    },
+    "execute_step": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    },
+    "precommit_gate": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    },
+    "verify_dod": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    },
+    "post_step_review": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    },
+    "checkpoint_route": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    },
+    "coverage_and_report": {
+      "role": "ANALYZER",
+      "tier": "model-medium",
+      "ensemble": false
+    }
+  },
+  "red_blue_verdict": {
+    "serious_flaws": [
+      "verify_dod has two 'required' out-edges (-> post_step_review and -> execute_step), i.e. a parallel fan-out, but the two branches never reconverge at an AND-join node"
+    ],
+    "verdict": null,
+    "attacks": null
+  }
+}

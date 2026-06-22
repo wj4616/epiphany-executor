@@ -1,0 +1,84 @@
+{
+  "schema": "epiphany-brief/handoff@1",
+  "slug": "e2e-harness-fixture",
+  "version": "1.0.0",
+  "domain": "harness_skill",
+  "stage": "brief",
+  "prev_stage": null,
+  "next_skill": "epiphany-spec",
+  "target_profile": "harness-forge",
+  "ready_for_spec": true,
+  "blocking_gaps": [],
+  "harness_ledger": {
+    "G": {
+      "facet": "G",
+      "present": true,
+      "source_stage": "brief",
+      "detail_ref": null,
+      "status": "full"
+    },
+    "W": {
+      "facet": "W",
+      "present": true,
+      "source_stage": "brief",
+      "detail_ref": null,
+      "status": "full"
+    },
+    "V": {
+      "facet": "V",
+      "present": true,
+      "source_stage": "brief",
+      "detail_ref": null,
+      "status": "full"
+    },
+    "M": {
+      "facet": "M",
+      "present": true,
+      "source_stage": "brief",
+      "detail_ref": null,
+      "status": "full"
+    },
+    "B": {
+      "facet": "B",
+      "present": true,
+      "source_stage": "brief",
+      "detail_ref": null,
+      "status": "full"
+    },
+    "E": {
+      "facet": "E",
+      "present": true,
+      "source_stage": "brief",
+      "detail_ref": null,
+      "status": "full"
+    },
+    "O": {
+      "facet": "O",
+      "present": true,
+      "source_stage": "brief",
+      "detail_ref": null,
+      "status": "full"
+    },
+    "K": {
+      "facet": "K",
+      "present": true,
+      "source_stage": "brief",
+      "detail_ref": null,
+      "status": "full"
+    }
+  },
+  "wiring_contract_rows": [
+    {
+      "id": "WC-1",
+      "requirement": "resolve workspace",
+      "mechanism": "node_body",
+      "fired_marker": {
+        "kind": "node_exec",
+        "value": "dir exists"
+      },
+      "traces": [
+        "APU-1"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,744 @@
+{
+  "schema_version": "epiphany-harness.ir.v1",
+  "dialect": "native",
+  "skill_name": "epiphany-executor",
+  "skill_version": "1.0.0",
+  "determinism_class": "non-deterministic",
+  "nodes": {
+    "read_plan": {
+      "id": "read_plan",
+      "name": "read_plan",
+      "type": "io",
+      "tier": "no-llm",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "plan_path",
+          "required": false,
+          "signal_field": "plan_path"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "plan_raw",
+          "signal_field": "plan_raw"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-read_plan.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": "",
+      "tool_call": {
+        "tool": "fs.read_text",
+        "args": {
+          "path": "plan_path"
+        },
+        "outputs": {
+          "plan_raw": "content"
+        }
+      }
+    },
+    "ingest_plan": {
+      "id": "ingest_plan",
+      "name": "ingest_plan",
+      "type": "io",
+      "tier": "no-llm",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "plan_raw",
+          "signal_field": "plan_raw"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "normalized_plan",
+          "signal_field": "normalized_plan"
+        },
+        {
+          "name": "plan_metadata",
+          "signal_field": "plan_metadata"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-ingest_plan.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": "",
+      "tool_call": {
+        "tool": "plan.normalize_md",
+        "args": {
+          "plan_raw": "plan_raw"
+        },
+        "outputs": {
+          "normalized_plan": "normalized_plan",
+          "plan_metadata": "plan_metadata"
+        }
+      }
+    },
+    "honor_gates": {
+      "id": "honor_gates",
+      "name": "honor_gates",
+      "type": "llm",
+      "tier": "model-medium",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "normalized_plan",
+          "signal_field": "normalized_plan"
+        },
+        {
+          "name": "plan_metadata",
+          "signal_field": "plan_metadata"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "gate_decision",
+          "signal_field": "gate_decision"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-honor_gates.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": ""
+    },
+    "build_context": {
+      "id": "build_context",
+      "name": "build_context",
+      "type": "llm",
+      "tier": "model-medium",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "normalized_plan",
+          "signal_field": "normalized_plan"
+        },
+        {
+          "name": "gate_decision",
+          "signal_field": "gate_decision"
+        },
+        {
+          "name": "ledger_state",
+          "signal_field": "ledger_state"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "step_context",
+          "signal_field": "step_context"
+        },
+        {
+          "name": "look_ahead",
+          "signal_field": "look_ahead"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-build_context.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": ""
+    },
+    "schedule_steps": {
+      "id": "schedule_steps",
+      "name": "schedule_steps",
+      "type": "llm",
+      "tier": "model-medium",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "normalized_plan",
+          "signal_field": "normalized_plan"
+        },
+        {
+          "name": "step_context",
+          "signal_field": "step_context"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "schedule",
+          "signal_field": "schedule"
+        },
+        {
+          "name": "next_step",
+          "signal_field": "next_step"
+        },
+        {
+          "name": "schedule_status",
+          "port": "schedule_status",
+          "signal_field": "schedule_status",
+          "type": "any",
+          "required": true
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-schedule_steps.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": ""
+    },
+    "execute_step": {
+      "id": "execute_step",
+      "name": "execute_step",
+      "type": "llm",
+      "tier": "model-medium",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "next_step",
+          "signal_field": "next_step"
+        },
+        {
+          "name": "step_context",
+          "signal_field": "step_context"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "step_effects",
+          "signal_field": "step_effects"
+        },
+        {
+          "name": "effect_records",
+          "signal_field": "effect_records"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-execute_step.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": ""
+    },
+    "precommit_gate": {
+      "id": "precommit_gate",
+      "name": "precommit_gate",
+      "type": "llm",
+      "tier": "model-medium",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "step_effects",
+          "signal_field": "step_effects"
+        },
+        {
+          "name": "effect_records",
+          "signal_field": "effect_records"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "precommit_approval",
+          "signal_field": "precommit_approval"
+        },
+        {
+          "name": "needs_human",
+          "port": "needs_human",
+          "signal_field": "needs_human",
+          "type": "any",
+          "required": true
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-precommit_gate.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": ""
+    },
+    "verify_dod": {
+      "id": "verify_dod",
+      "name": "verify_dod",
+      "type": "llm",
+      "tier": "model-medium",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "next_step",
+          "signal_field": "next_step"
+        },
+        {
+          "name": "step_effects",
+          "signal_field": "step_effects"
+        },
+        {
+          "name": "precommit_approval",
+          "signal_field": "precommit_approval"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "dod_verdict",
+          "signal_field": "dod_verdict"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-verify_dod.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": ""
+    },
+    "post_step_review": {
+      "id": "post_step_review",
+      "name": "post_step_review",
+      "type": "llm",
+      "tier": "model-medium",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "dod_verdict",
+          "signal_field": "dod_verdict"
+        },
+        {
+          "name": "step_effects",
+          "signal_field": "step_effects"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "state_delta",
+          "signal_field": "state_delta"
+        },
+        {
+          "name": "look_ahead",
+          "signal_field": "look_ahead"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-post_step_review.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": ""
+    },
+    "checkpoint_route": {
+      "id": "checkpoint_route",
+      "name": "checkpoint_route",
+      "type": "llm",
+      "tier": "model-medium",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "state_delta",
+          "signal_field": "state_delta"
+        },
+        {
+          "name": "dod_verdict",
+          "signal_field": "dod_verdict"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "ledger_state",
+          "signal_field": "ledger_state"
+        },
+        {
+          "name": "lifecycle_status",
+          "signal_field": "lifecycle_status"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-checkpoint_route.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": ""
+    },
+    "coverage_and_report": {
+      "id": "coverage_and_report",
+      "name": "coverage_and_report",
+      "type": "llm",
+      "tier": "model-medium",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "ledger_state",
+          "signal_field": "ledger_state"
+        },
+        {
+          "name": "normalized_plan",
+          "signal_field": "normalized_plan"
+        },
+        {
+          "name": "lifecycle_status",
+          "signal_field": "lifecycle_status"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "coverage_closure",
+          "signal_field": "coverage_closure"
+        },
+        {
+          "name": "telemetry_health",
+          "signal_field": "telemetry_health"
+        },
+        {
+          "name": "resume_brief",
+          "signal_field": "resume_brief"
+        },
+        {
+          "name": "executed_result",
+          "signal_field": "executed_result"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-coverage_and_report.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": ""
+    },
+    "human_gate": {
+      "id": "human_gate",
+      "name": "human_gate",
+      "type": "io",
+      "tier": "no-llm",
+      "exec_type": "inline",
+      "hat": "",
+      "hitl": true,
+      "hitl_editable_signals": [
+        "human_decision"
+      ],
+      "inputs": [
+        {
+          "name": "precommit_approval",
+          "port": "precommit_approval",
+          "signal_field": "precommit_approval",
+          "type": "any",
+          "required": true
+        },
+        {
+          "name": "needs_human",
+          "port": "needs_human",
+          "signal_field": "needs_human",
+          "type": "any",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "name": "human_decision",
+          "port": "human_decision",
+          "signal_field": "human_decision",
+          "type": "any",
+          "required": true
+        }
+      ],
+      "raises_signals": [],
+      "required_output_sections": [],
+      "module_file": "modules/N-human_gate.md",
+      "ensemble": null,
+      "tool_call": null,
+      "conditional": false,
+      "downshiftable": false,
+      "rationale": "\u00a76 human gate",
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "wave": null
+    },
+    "closure_gate": {
+      "id": "closure_gate",
+      "name": "closure_gate",
+      "type": "gate",
+      "tier": "no-llm",
+      "exec_type": "inline",
+      "hat": "",
+      "inputs": [
+        {
+          "name": "plan",
+          "signal_field": "normalized_plan",
+          "required": false
+        },
+        {
+          "name": "skill_pkg",
+          "signal_field": "skill_pkg",
+          "required": false
+        }
+      ],
+      "outputs": [
+        {
+          "name": "closure_check",
+          "signal_field": "closure_check"
+        },
+        {
+          "name": "verdict",
+          "signal_field": "verdict"
+        },
+        {
+          "name": "gaps",
+          "signal_field": "closure_gaps"
+        }
+      ],
+      "raises_signals": [],
+      "module_file": "modules/N-closure_gate.md",
+      "ensemble": null,
+      "hitl": false,
+      "scale_gates": {},
+      "join_policy": null,
+      "aggregation_policy": null,
+      "required_output_sections": [],
+      "conditional": false,
+      "wave": null,
+      "downshiftable": false,
+      "rationale": "Deterministic in-graph closure gate: runs wiring-check static battery; routes pass->done, blocked->closure-blocked (verdict=FAIL). No-LLM => harness-driven, agent cannot skip/fake it.",
+      "tool_call": {
+        "tool": "wiring.closure_gate",
+        "args": {
+          "plan": "normalized_plan",
+          "skill_pkg": "skill_pkg"
+        },
+        "outputs": {
+          "closure_check": "closure_check",
+          "verdict": "verdict",
+          "closure_gaps": "gaps"
+        }
+      }
+    }
+  },
+  "edges": [
+    {
+      "id": "E01",
+      "src": "read_plan",
+      "dst": "ingest_plan",
+      "kind": "required",
+      "signal_field": null,
+      "gate_condition": null,
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    },
+    {
+      "id": "E02",
+      "src": "ingest_plan",
+      "dst": "honor_gates",
+      "kind": "required",
+      "signal_field": null,
+      "gate_condition": null,
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    },
+    {
+      "id": "E03",
+      "src": "honor_gates",
+      "dst": "build_context",
+      "kind": "required",
+      "signal_field": null,
+      "gate_condition": null,
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    },
+    {
+      "id": "E04",
+      "src": "build_context",
+      "dst": "schedule_steps",
+      "kind": "required",
+      "signal_field": null,
+      "gate_condition": null,
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    },
+    {
+      "id": "E06",
+      "src": "execute_step",
+      "dst": "precommit_gate",
+      "kind": "required",
+      "signal_field": null,
+      "gate_condition": null,
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    },
+    {
+      "id": "E08",
+      "src": "verify_dod",
+      "dst": "post_step_review",
+      "kind": "required",
+      "signal_field": null,
+      "gate_condition": null,
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    },
+    {
+      "id": "E09",
+      "src": "post_step_review",
+      "dst": "checkpoint_route",
+      "kind": "required",
+      "signal_field": null,
+      "gate_condition": null,
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    },
+    {
+      "id": "E05",
+      "src": "schedule_steps",
+      "dst": "execute_step",
+      "kind": "forward-conditional",
+      "gate_condition": "schedule_status == \"ready\""
+    },
+    {
+      "id": "E12",
+      "src": "schedule_steps",
+      "dst": "coverage_and_report",
+      "kind": "forward-conditional",
+      "gate_condition": "schedule_status == \"complete\""
+    },
+    {
+      "id": "E11",
+      "src": "checkpoint_route",
+      "dst": "schedule_steps",
+      "kind": "back-edge",
+      "retry_cap": 200,
+      "gate_condition": null
+    },
+    {
+      "id": "E07",
+      "src": "precommit_gate",
+      "dst": "verify_dod",
+      "kind": "forward-conditional",
+      "gate_condition": "needs_human != true"
+    },
+    {
+      "id": "E13",
+      "src": "precommit_gate",
+      "dst": "human_gate",
+      "kind": "forward-conditional",
+      "gate_condition": "needs_human == true"
+    },
+    {
+      "id": "E14",
+      "src": "human_gate",
+      "dst": "verify_dod",
+      "kind": "required",
+      "gate_condition": null
+    },
+    {
+      "id": "E17",
+      "src": "coverage_and_report",
+      "dst": "closure_gate",
+      "kind": "required",
+      "signal_field": null,
+      "gate_condition": null,
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    },
+    {
+      "id": "E18",
+      "src": "closure_gate",
+      "dst": "EXT_done",
+      "kind": "forward-conditional",
+      "signal_field": null,
+      "gate_condition": "closure_check == \"pass\"",
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    },
+    {
+      "id": "E19",
+      "src": "closure_gate",
+      "dst": "EXT_closure_blocked",
+      "kind": "forward-conditional",
+      "signal_field": null,
+      "gate_condition": "closure_check == \"blocked\"",
+      "retry_cap": null,
+      "and_join_group": null,
+      "split_from": null
+    }
+  ],
+  "entrypoints": [
+    "read_plan"
+  ]
+}

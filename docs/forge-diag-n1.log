@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "verdict": "UNCERTAIN",
+  "dest": null,
+  "family": null,
+  "reason": "intent-alignment abstain: missing required coverage: ['scheduling']"
+}

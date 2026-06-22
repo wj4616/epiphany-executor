@@ -1,0 +1,96 @@
+{
+  "all_ok": true,
+  "routed_to_cotuning": [],
+  "results": [
+    {
+      "name": "2026-05-31-goatcs-v3-build-plan",
+      "kind": "json",
+      "ingested": true,
+      "gate": "HALT",
+      "scheduled": false,
+      "disposition": "correct-halt",
+      "ok": true,
+      "error": null
+    },
+    {
+      "name": "2026-05-31-gotscs-v1-build-plan",
+      "kind": "json",
+      "ingested": true,
+      "gate": "HALT",
+      "scheduled": false,
+      "disposition": "correct-halt",
+      "ok": true,
+      "error": null
+    },
+    {
+      "name": "2026-05-31-power-flywheel-next-phase-plan",
+      "kind": "json",
+      "ingested": true,
+      "gate": "HALT",
+      "scheduled": false,
+      "disposition": "correct-halt",
+      "ok": true,
+      "error": null
+    },
+    {
+      "name": "epiphany-langprompt-v1-build-plan.md",
+      "kind": "md",
+      "ingested": true,
+      "gate": "PROCEED",
+      "scheduled": true,
+      "disposition": "end-to-end",
+      "ok": true,
+      "error": null
+    },
+    {
+      "name": "forge-round-b-build-plan.md",
+      "kind": "md",
+      "ingested": true,
+      "gate": "PROCEED",
+      "scheduled": true,
+      "disposition": "end-to-end",
+      "ok": true,
+      "error": null
+    },
+    {
+      "name": "forge-v2-build-plan.md",
+      "kind": "md",
+      "ingested": true,
+      "gate": "PROCEED",
+      "scheduled": true,
+      "disposition": "end-to-end",
+      "ok": true,
+      "error": null
+    },
+    {
+      "name": "forked-epiphany-goatcs-harness-v1-build-plan.md",
+      "kind": "md",
+      "ingested": true,
+      "gate": "PROCEED",
+      "scheduled": true,
+      "disposition": "end-to-end",
+      "ok": true,
+      "error": null
+    },
+    {
+      "name": "goatcs-v3-build-execution-plan.md",
+      "kind": "md",
+      "ingested": true,
+      "gate": "HALT",
+      "scheduled": false,
+      "disposition": "correct-halt",
+      "ok": true,
+      "error": null
+    },
+    {
+      "name": "gotscs-v1-build-execution-plan.md",
+      "kind": "md",
+      "ingested": true,
+      "gate": "HALT",
+      "scheduled": false,
+      "disposition": "correct-halt",
+      "ok": true,
+      "error": null
+    }
+  ]
+}

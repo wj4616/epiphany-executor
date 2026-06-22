@@ -1,0 +1,25 @@
+{
+  "skill_name": "forged-skill",
+  "skill_version": "1.0.0",
+  "schema_version": "epiphany-harness.ir.v1",
+  "files": [
+    "SKILL.md",
+    "bootstrap.py",
+    "graph.json",
+    "graph.schema.json",
+    "install.sh",
+    "manifest.json",
+    "modules/N-build_context.md",
+    "modules/N-checkpoint_route.md",
+    "modules/N-coverage_and_report.md",
+    "modules/N-execute_step.md",
+    "modules/N-honor_gates.md",
+    "modules/N-ingest_plan.md",
+    "modules/N-post_step_review.md",
+    "modules/N-precommit_gate.md",
+    "modules/N-read_plan.md",
+    "modules/N-schedule_steps.md",
+    "modules/N-verify_dod.md"
+  ],
+  "produced_by": "goatcs-harness-generator"
+}
